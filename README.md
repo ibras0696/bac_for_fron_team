@@ -34,6 +34,54 @@ drf_project/
 └─ main.py                   # временные заглушки (если нужны)
 ```
 
+### Ожидаемая структура после реализации
+
+```
+drf_project/
+├─ docs/
+│  ├─ bff-integration.md
+│  ├─ tech-cheatsheet.md
+│  ├─ infra-dev.md
+│  ├─ infra-prod.md
+│  └─ sprints/
+│      ├─ sprint1.md
+│      ├─ sprint2.md
+│      └─ sprint3.md
+├─ crm_backend/
+│  ├─ config/                # settings, urls, wsgi/asgi
+│  ├─ apps/
+│  │   ├─ users/
+│  │   ├─ clients/
+│  │   ├─ deals/
+│  │   ├─ tasks/
+│  │   └─ activity/
+│  ├─ requirements/          # base/dev/prod requirements
+│  ├─ manage.py
+│  └─ Dockerfile
+├─ crm_frontend/
+│  ├─ config/                # settings, urls, templates
+│  ├─ services/
+│  │   ├─ dto.py
+│  │   └─ backend_api.py
+│  ├─ templates/
+│  ├─ static/                # Tailwind build
+│  ├─ apps/
+│  │   ├─ dashboard/
+│  │   ├─ clients/
+│  │   ├─ deals/
+│  │   └─ tasks/
+│  ├─ package.json
+│  ├─ tailwind.config.js
+│  └─ Dockerfile
+├─ docker-compose.yml
+├─ docker-compose.prod.yml
+├─ Makefile
+├─ plan.md
+└─ README.md
+```
+
+Такой список поможет поддерживать единообразие и отвечать на вопросы «где лежит X?».
+
 ## Быстрый старт (dev-режим)
 
 1. Установите зависимости (Python 3.12+, Docker, Make/NPM при необходимости).
@@ -69,6 +117,13 @@ drf_project/
 - Архитектура и план: [`plan.md`](plan.md)
 - Интеграция BFF ↔ backend: [`docs/bff-integration.md`](docs/bff-integration.md)
 - Шпаргалка по стеку: [`docs/tech-cheatsheet.md`](docs/tech-cheatsheet.md)
+- Спринт-планы:
+  - [`docs/sprints/sprint1.md`](docs/sprints/sprint1.md)
+  - [`docs/sprints/sprint2.md`](docs/sprints/sprint2.md)
+  - [`docs/sprints/sprint3.md`](docs/sprints/sprint3.md)
+- Инфраструктура:
+  - Dev окружение — [`docs/infra-dev.md`](docs/infra-dev.md)
+  - Prod окружение — [`docs/infra-prod.md`](docs/infra-prod.md)
 
 ## Дальнейшие шаги
 
