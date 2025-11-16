@@ -21,7 +21,7 @@
 Таблица помогает быстро понять, к кому относится конкретный раздел и кому адресовать вопросы.
 ## Структура (в разработке)
 
-`
+```text
 drf_project/
 ├─ backend/
 │  ├─ Dockerfile
@@ -43,10 +43,11 @@ drf_project/
 ├─ Makefile
 ├─ plan.md
 └─ README.md
-`
+```
+
 ### Ожидаемая структура после реализации
 
-`
+```text
 drf_project/
 ├─ docs/
 │  ├─ bff-integration.md
@@ -90,7 +91,21 @@ drf_project/
 ├─ Makefile
 ├─ plan.md
 └─ README.md
-`
+```
+
+## Диаграмма сервисов
+
+```mermaid
+graph TD
+    Browser["Браузер пользователя"] -->|HTMX/HTML| Frontend["Frontend/BFF"]
+    Frontend -->|REST JSON| Backend["Backend API"]
+    Backend --> Postgres[(PostgreSQL)]
+    Backend --> Redis[(Redis)]
+    Frontend -.->|Кэш токенов/partials| Redis
+    Backend -->|Задачи| Celery["Celery workers"]
+    Celery --> Redis
+```
+
 ## Быстрый старт (dev-режим)
 
 1. Установите зависимости (Python 3.12+, Docker, Make/NPM при необходимости).
