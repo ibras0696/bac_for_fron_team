@@ -1,0 +1,44 @@
+﻿# IDE/OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+
+# Django artifacts
+media/
+staticfiles/
+
+# Node
+node_modules/
+package-lock.json
+
+# Env files
+.env
+.env.*
+backend/.env
+frontend/.env
+.env.prod
+backend/.env.prod
+frontend/.env.prod
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+htmlcov/
+.coverage*
+
+# Docker
+**/.dockerignore
+
+# Misc
+.idea/
+.vscode/

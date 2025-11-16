@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  # Django REST backend
+  # Django REST backend / Бекенд на Django REST
   backend:
     build:
       context: ./backend
@@ -9,13 +9,13 @@ services:
       - .env
       - backend/.env
     volumes:
-      - ./backend:/app   # bind mount for live reload in dev
+      - ./backend:/app   # bind mount for live reload in dev / маунтим код для live reload
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - postgres
       - redis
 
-  # Django templates + HTMX BFF
+  # Django templates + HTMX BFF / Фронт+BFF на Django templates
   frontend:
     build:
       context: ./frontend
@@ -23,13 +23,13 @@ services:
       - .env
       - frontend/.env
     volumes:
-      - ./frontend:/app
+      - ./frontend:/app   # maунтим фронтовый код
     command: python manage.py runserver 0.0.0.0:8001
     depends_on:
-      - backend   # needs API
+      - backend   # needs API / зависит от backend
       - redis
 
-  # Celery worker (reuse backend image)
+  # Celery worker (reuse backend image) / Celery worker (использует образ backend)
   celery:
     build:
       context: ./backend
@@ -42,7 +42,7 @@ services:
       - redis
       - postgres
 
-  # Celery beat scheduler
+  # Celery beat scheduler / Планировщик Celery beat
   celery-beat:
     build:
       context: ./backend
@@ -55,7 +55,7 @@ services:
       - redis
       - postgres
 
-  # PostgreSQL database
+  # PostgreSQL database / База данных PostgreSQL
   postgres:
     image: postgres:15
     environment:
@@ -65,11 +65,11 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
-  # Redis for cache/broker
+  # Redis for cache/broker / Redis для кэша/брокера
   redis:
     image: redis:7
 
-  # Reverse proxy for dev parity
+  # Reverse proxy for dev parity / Nginx как reverse proxy для локалки
   nginx:
     image: nginx:1.25
     ports:

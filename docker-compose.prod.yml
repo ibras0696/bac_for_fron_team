@@ -1,4 +1,4 @@
-# Production-style docker compose (Gunicorn, no bind mounts)
+# Production-style docker compose (Gunicorn, no bind mounts) / Прод-конфиг (Gunicorn, без маунтов)
 version: "3.9"
 
 services:
@@ -9,7 +9,7 @@ services:
     env_file:
       - .env.prod
       - backend/.env.prod
-    volumes: []  # use baked image, no dev mounts
+    volumes: []  # use baked image, no dev mounts / используем запечённый образ
 
   frontend:
     build:
@@ -18,7 +18,7 @@ services:
     env_file:
       - .env.prod
       - frontend/.env.prod
-    volumes: []
+    volumes: []  # аналогично без маунтов
 
   celery:
     build:
