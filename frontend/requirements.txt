@@ -1,0 +1,7 @@
+Django>=5.0,<5.1
+django-htmx>=1.18
+httpx>=0.25
+python-dotenv>=1.0
+gunicorn>=21.2
+whitenoise>=6.6
+redis>=5.0

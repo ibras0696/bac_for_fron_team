@@ -1,0 +1,47 @@
+# Production-style docker compose (Gunicorn, no bind mounts)
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    command: gunicorn config.wsgi:application -w 4 -b 0.0.0.0:8000
+    env_file:
+      - .env.prod
+      - backend/.env.prod
+    volumes: []  # use baked image, no dev mounts
+
+  frontend:
+    build:
+      context: ./frontend
+    command: gunicorn config.wsgi:application -w 3 -b 0.0.0.0:8001
+    env_file:
+      - .env.prod
+      - frontend/.env.prod
+    volumes: []
+
+  celery:
+    build:
+      context: ./backend
+    command: celery -A config worker -l info
+    env_file:
+      - .env.prod
+      - backend/.env.prod
+
+  celery-beat:
+    build:
+      context: ./backend
+    command: celery -A config beat -l info
+    env_file:
+      - .env.prod
+      - backend/.env.prod
+
+  nginx:
+    image: nginx:1.25
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend

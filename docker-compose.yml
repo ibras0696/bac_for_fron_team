@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  # Django REST backend
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+      - backend/.env
+    volumes:
+      - ./backend:/app   # bind mount for live reload in dev
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+      - redis
+
+  # Django templates + HTMX BFF
+  frontend:
+    build:
+      context: ./frontend
+    env_file:
+      - .env
+      - frontend/.env
+    volumes:
+      - ./frontend:/app
+    command: python manage.py runserver 0.0.0.0:8001
+    depends_on:
+      - backend   # needs API
+      - redis
+
+  # Celery worker (reuse backend image)
+  celery:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+      - backend/.env
+    command: celery -A config worker -l info
+    depends_on:
+      - backend
+      - redis
+      - postgres
+
+  # Celery beat scheduler
+  celery-beat:
+    build:
+      context: ./backend
+    env_file:
+      - .env
+      - backend/.env
+    command: celery -A config beat -l info
+    depends_on:
+      - backend
+      - redis
+      - postgres
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-crm_dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crm_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-crm_dev}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  # Redis for cache/broker
+  redis:
+    image: redis:7
+
+  # Reverse proxy for dev parity
+  nginx:
+    image: nginx:1.25
+    ports:
+      - "${NGINX_PORT:-8000}:80"
+    volumes:
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  pg_data: {}

@@ -13,30 +13,40 @@
 
 | Роль / участник         | Зона ответственности                                                                                   | Артефакты/директории                                                    |
 |-------------------------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| Тимлид (Codex)          | Архитектурное видение, планирование, методички, ревью решений.                                         | `plan.md`, `README.md`, `docs/`                                         |
-| Backend-разработчик     | Реализация `crm_backend`: модели, DRF API, Celery, миграции, интеграция с Postgres/Redis.              | будущая папка `crm_backend/`, docker-compose, тесты backend             |
-| Frontend/BFF-разработчик| Django templates, HTMX, Tailwind, BFF-сервисы, интеграция с backend API через DTO/клиент.             | `crm_frontend/` (особенно `services/`), UI-компоненты, BFF-кэш          |
-| DevOps/Infra            | Docker/Nginx, CI/CD, переменные окружения, мониторинг/алертинг.                                        | `docker-compose*.yml`, `.env.example`, CI workflows                     |
+| Тимлид (Codex)          | Архитектурное видение, планирование, методички, ревью решений.                                         | plan.md, README.md, docs/                                         |
+| Backend-разработчик     | Реализация ackend/: модели, DRF API, Celery, миграции, интеграция с Postgres/Redis.                 | ackend/ (Dockerfile, Makefile, .env.example, requirements)         |
+| Frontend/BFF-разработчик| Django templates, HTMX, Tailwind, BFF-сервисы, интеграция с backend API через DTO/клиент.             | rontend/ (services, Dockerfile, Makefile, .env.example)            |
+| DevOps/Infra            | Docker/Nginx, CI/CD, переменные окружения, мониторинг/alerting.                                        | docker-compose*.yml, .env*, infra/                                |
 
 Таблица помогает быстро понять, к кому относится конкретный раздел и кому адресовать вопросы.
-
 ## Структура (в разработке)
 
-```
+`
 drf_project/
-├─ docs/                     # дополнительные инструкции
-├─ crm_frontend/
-│  └─ services/
-│     ├─ dto.py              # DTO-схемы для BFF
-│     └─ backend_api.py      # HTTP-клиент для доступа к backend
-├─ plan.md                   # детальный план работ/архитектуры
-├─ README.md                 # этот файл
-└─ main.py                   # временные заглушки (если нужны)
-```
-
+├─ backend/
+│  ├─ Dockerfile
+│  ├─ Makefile
+│  ├─ requirements.txt
+│  └─ .env.example
+├─ frontend/
+│  ├─ services/
+│  │  ├─ dto.py
+│  │  └─ backend_api.py
+│  ├─ Dockerfile
+│  ├─ Makefile
+│  ├─ requirements.txt
+│  └─ .env.example
+├─ docs/
+├─ infra/
+├─ docker-compose.yml
+├─ docker-compose.prod.yml
+├─ Makefile
+├─ plan.md
+└─ README.md
+`
 ### Ожидаемая структура после реализации
 
-```
+`
 drf_project/
 ├─ docs/
 │  ├─ bff-integration.md
@@ -47,24 +57,24 @@ drf_project/
 │      ├─ sprint1.md
 │      ├─ sprint2.md
 │      └─ sprint3.md
-├─ crm_backend/
-│  ├─ config/                # settings, urls, wsgi/asgi
+├─ backend/
+│  ├─ config/
 │  ├─ apps/
 │  │   ├─ users/
 │  │   ├─ clients/
 │  │   ├─ deals/
 │  │   ├─ tasks/
 │  │   └─ activity/
-│  ├─ requirements/          # base/dev/prod requirements
+│  ├─ requirements/
 │  ├─ manage.py
 │  └─ Dockerfile
-├─ crm_frontend/
-│  ├─ config/                # settings, urls, templates
+├─ frontend/
+│  ├─ config/
 │  ├─ services/
 │  │   ├─ dto.py
 │  │   └─ backend_api.py
 │  ├─ templates/
-│  ├─ static/                # Tailwind build
+│  ├─ static/
 │  ├─ apps/
 │  │   ├─ dashboard/
 │  │   ├─ clients/
@@ -73,34 +83,33 @@ drf_project/
 │  ├─ package.json
 │  ├─ tailwind.config.js
 │  └─ Dockerfile
+├─ infra/
+│  └─ nginx/default.conf
 ├─ docker-compose.yml
 ├─ docker-compose.prod.yml
 ├─ Makefile
 ├─ plan.md
 └─ README.md
-```
-
-Такой список поможет поддерживать единообразие и отвечать на вопросы «где лежит X?».
-
+`
 ## Быстрый старт (dev-режим)
 
 1. Установите зависимости (Python 3.12+, Docker, Make/NPM при необходимости).
 2. Скопируйте переменные окружения:
-   ```powershell
+   `powershell
    Copy-Item .env.example .env
-   ```
-   *(файл появится после инициализации backend/frontend приложений)*.
+   Copy-Item backend\.env.example backend\.env
+   Copy-Item frontend\.env.example frontend\.env
+   `
 3. Запустите инфраструктуру:
-   ```bash
+   `ash
    docker compose up --build
-   ```
+   `
 4. Создайте суперпользователя в backend и администратора в frontend:
-   ```bash
+   `ash
    docker compose run --rm backend python manage.py createsuperuser
    docker compose run --rm frontend python manage.py createsuperuser
-   ```
-5. Откройте `http://localhost:8000` (frontend) и `http://localhost:8000/api/` (backend через nginx proxy).
-
+   `
+5. Откройте http://localhost:8000 (frontend через nginx) и http://localhost:8000/api/ (backend).
 ## Частые команды
 
 | Цель                      | Команда                                                                 |
@@ -124,6 +133,7 @@ drf_project/
 - Инфраструктура:
   - Dev окружение — [`docs/infra-dev.md`](docs/infra-dev.md)
   - Prod окружение — [`docs/infra-prod.md`](docs/infra-prod.md)
+  - Общий обзор — [`infra/README.md`](infra/README.md)
 
 ## Дальнейшие шаги
 
